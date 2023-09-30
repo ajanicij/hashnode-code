@@ -88,7 +88,7 @@ error[E0382]: assign of moved value: `ms`
 That is another fascinating thing about Rust: in many cases the error message is
 describing exactly what the compiler doesn't like. Here we declared an instance ms of
 MyStruct, then we declared another, ms2. After executing ms2 = ms, the object has
-been moved so now it is owned by ms2. (I we had assigned an object to ms2 before
+been moved so now it is owned by ms2. (If we had assigned an object to ms2 before
 this ownership transfer, that other object would be dropped by executing ms2 = ms,
 and we would see drop function being called.) At this point, ms owns nothing, so
 ms.var = 1; makes no sense and the compiler does not like it.
