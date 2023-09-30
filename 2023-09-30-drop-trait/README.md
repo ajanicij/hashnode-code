@@ -179,6 +179,4 @@ not.
 
 Get all code at
 
-```
-https://github.com/ajanicij/hashnode-code/tree/master/2023-09-30-drop-trait
-```
+[github.com/ajanicij/hashnode-code/tree/master/2023-09-30-drop-trait](https://github.com/ajanicij/hashnode-code/tree/master/2023-09-30-drop-trait)
