@@ -176,3 +176,9 @@ That is what I find fascinating. How does the code know whether to drop or not?
 I have not analyzed the compiled code, but I recon there has to be some hidden
 variable created by the compiler that keeps track of whether ms is assigned or
 not.
+
+Get all code at
+
+```
+https://github.com/ajanicij/hashnode-code/tree/master/2023-09-30-drop-trait
+```
