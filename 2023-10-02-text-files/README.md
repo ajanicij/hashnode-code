@@ -96,3 +96,7 @@ error message:
 
 and exits with code 1 (any code other than 0 means there was an error).
 
+Get the code at
+
+[https://github.com/ajanicij/hashnode-code/tree/master/2023-10-02-text-files](https://github.com/ajanicij/hashnode-code/tree/master/2023-10-02-text-files)
+
