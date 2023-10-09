@@ -3,13 +3,13 @@ stuff, and something that you can find described on countless pages,
 including Rust's official documentation. I am doing this one for my
 record.
 
-## Reading whole file with one function call
+## Reading the whole file with one function call
 
 The first program:
 
 - gets file name from the command line
 - reads file contents into a string by calling read_to_string
-- writes the contents to the standar output
+- writes the contents to the standard output
 
 ```
 fn main() {
@@ -31,7 +31,7 @@ For this, we:
 
 - open file
 - create a reader, an instance of BufReader
-- from the reader, get an interator to the lines
+- from the reader, get an iterator to the lines
 - iterate through all the lines and write them to the standard output
 
 ```
@@ -74,10 +74,10 @@ we expect the call to succeed. In other words, if this causes panic, then
 we have a bug.
 
 In case of opening a file, if a file is not found or our program is not
-authorised to open it, it should not panic but rather display an error
+authorized to open it, it should not panic but rather display an error
 message and exit (or not, depending on what we want to do in the program).
 
-For example, instead of called unwrap, we can do this:
+For example, instead of calling unwrap, we can do this:
 
 ```
     let file = match File::open(file_path) {
@@ -90,7 +90,7 @@ For example, instead of called unwrap, we can do this:
 ```
 
 That code behaves much more decently, and if the file is not found, writes
-error message:
+an error message:
 
     Error opening input.txt2: No such file or directory (os error 2)
 
