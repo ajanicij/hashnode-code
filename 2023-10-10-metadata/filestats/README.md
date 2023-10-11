@@ -91,4 +91,6 @@ links:
 
     metadata.st_nlink()
 
+Get the code at
 
+[2023-10-10-metadata](https://github.com/ajanicij/hashnode-code/tree/master/2023-10-10-metadata/filestats)
