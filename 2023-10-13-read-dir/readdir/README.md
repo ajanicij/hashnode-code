@@ -35,7 +35,7 @@ by calling fs::read_dir(dir):
 
 This will list all the entries, but not necessarily in any order. For the
 purposes of this post, we want to sort the entries alphabetically (simply
-because ls command does that).
+because the ls command does that).
 
 Function extract_str_from_dir_entry is as follows:
 
@@ -54,7 +54,7 @@ fn extract_str_from_dir_entry(entry: &DirEntry) -> Result<String, Error> {
 }
 ```
 
-This looks complicated for the simple task of getting file name, so let's
+This looks complicated for the simple task of getting the file name, so let's
 unpack it.
 
 entry argument has the type
@@ -69,12 +69,12 @@ To extract the file name from the path, we use method
 [file_name](https://doc.rust-lang.org/std/path/struct.PathBuf.html#method.file_name),
 which returns
 [OsStr](https://doc.rust-lang.org/std/ffi/struct.OsStr.html), which is similar
-to &str. It a "borrowed reference to an OS string." Why doesn't file_name() return
+to &str. It is a "borrowed reference to an OS string." Why doesn't file_name() return
 &str? Because Rust guarantees that &str and String always represent correct
 UTF-8 strings, and a file path in various OSs is not guaranteed to be a correct
 UTF-8 string.
 
-To convert file name from OsStr to &str, we use method
+To convert the file name from OsStr to &str, we use method
 [to_str](https://doc.rust-lang.org/std/ffi/struct.OsStr.html#method.to_str), which
 returns Option<&str>. If the file name is not a proper UTF-8 string, to_str() will
 return None. That's the beauty of Rust: it uses the type system to ensure that
@@ -89,7 +89,7 @@ to_string would have worked too, but to_owned is
 ## Sorting directory entries
 
 One final thing to discuss is sorting the directory entries. I checked how ls
-works: it sorts the entries in case-insensitive way, so that is what I
+works: it sorts the entries in a case-insensitive way, so that is what I
 implemented here.
 
 ```
@@ -106,7 +106,7 @@ implemented here.
     }
 ```
 
-First we declare a vector of strings for entries and as we iterate through the
+First, we declare a vector of strings for entries and as we iterate through the
 entries, we push them into this vector. After that, we sort the vector, passing
 the closure that converts strings to lowercase before comparing them.
 
