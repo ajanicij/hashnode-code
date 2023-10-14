@@ -110,5 +110,5 @@ First we declare a vector of strings for entries and as we iterate through the
 entries, we push them into this vector. After that, we sort the vector, passing
 the closure that converts strings to lowercase before comparing them.
 
-And that's it.
-
+And that's it. Get the code at
+[2023-10-13-read-dir/readdir](https://github.com/ajanicij/hashnode-code/tree/master/2023-10-13-read-dir/readdir).
