@@ -325,3 +325,6 @@ fn perm_char(flag: u32, ch: char) -> char {
     }
 }
 ```
+
+Get the code at
+[2023-10-15-ls](https://github.com/ajanicij/hashnode-code/tree/master/2023-10-15-ls/ls-rs).
