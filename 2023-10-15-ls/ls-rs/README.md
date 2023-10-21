@@ -1,4 +1,4 @@
-Finally we have all the elements we need to implement a mini version of
+Finally, we have all the elements we need to implement a mini version of
 ls command in Rust.
 
 Function main delegates to run. We do this in order to catch any errors
@@ -15,7 +15,7 @@ fn main() {
 }
 ```
 
-Function run will look like this:
+The function run will look like this:
 
 ```
 fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -139,7 +139,7 @@ depends on command line options:
 
 - -a means we show all entries, including the entries whose name starts
   with '.'. It is a Unix convention that those entries are not shown
-  by default .
+  by  .
 - -l means we show more information about each entry.
 
 ```
@@ -259,12 +259,12 @@ fn show_file(entry: &MyDirEntry) {
 ```
 
 In this function, we used crate [colorize](https://docs.rs/colorize/latest/colorize/)
-to give the entry different colors: if it is a directory, we paint it blue, and
+to give the entry different colours: if it is a directory, we paint it blue, and
 if it is an executable file, we paint it green.
 
 Note how this is done: trait [AnsiColor](https://docs.rs/colorize/latest/colorize/trait.AnsiColor.html)
 has methods blue and green (and many others) to use escape sequences to give strings
-a color. The crate colorize implements this trait for String and &str, so using it
+a colour. The crate colorize implements this trait for String and &str, so using it
 is dead simple: for example, printing expression "xyz".blue() will render text "xyz"
 in blue.
 
