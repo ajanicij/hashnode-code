@@ -1,0 +1,192 @@
+use clap::{arg, command, Arg, ArgAction};
+use std::fs;
+use std::io::{Error, ErrorKind};
+use std::fs::DirEntry;
+use std::os::linux::fs::MetadataExt;
+use std::os::unix::fs::PermissionsExt;
+use libc;
+use chrono::Local;
+use systime_converter;
+use colored::Colorize;
+
+#[derive(Debug)]
+struct LsOptions {
+    long: bool,
+    all: bool,
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let matches = command!("ls") // requires `cargo` feature
+        .version("0.1")
+        .author("Aleksandar J. <ajanicij@yahoo.com>")
+        .about("Mini ls implemented in Rust")
+        .arg(
+            Arg::new("long")
+                .short('l')
+                .action(ArgAction::SetTrue)
+                .help("use a long listing format"),
+        )
+        .arg(
+            Arg::new("all")
+                .short('a')
+                .long("all")
+                .action(ArgAction::SetTrue)
+                .help("do not ignore entries starting with .")
+        )
+        .arg(
+            // Arg::new("file")
+            arg!([FILE])
+                .action(ArgAction::Append),
+        )
+        .get_matches();
+
+    let options = LsOptions {
+        long: matches.get_flag("long"),
+        all: matches.get_flag("all"),
+    };
+    
+    if options.long {
+        println!("Printing long information for each file...");
+    }
+    if options.all {
+        println!("Including files whose name starts with '.' in the list...");
+    }
+
+    // Try to get all positional arguments.
+    let mut files: Vec<String>;
+    files = matches.get_many::<String>("FILE")
+        .unwrap_or_default()
+        .map(|v| v.as_str().to_owned())
+        .collect();
+    if files.len() == 0 {
+        files.push(".".to_owned());
+    }
+    // println!("files: {:?}", files);
+    for file in &files {
+        show_directory(file, &options)?;
+    }
+
+    Ok(())
+}
+
+fn show_directory(path: &str, options: &LsOptions) -> Result<(), Error> {
+    // println!("showing {} with options {:?}", path, options);
+    let metadata = fs::metadata(path)?;
+    let is_dir = metadata.is_dir();
+    if !is_dir {
+        // println!("{}", path);
+        let _ = show_entry(path, options);
+        return Ok(());
+    }
+
+    let pathlist = fs::read_dir(path)?;
+    let mut entries = Vec::new();
+    for entry in pathlist {
+        let entry = entry?;
+        let path = entry.path();
+        let file = path.to_str();
+        if let Some(file) = file {
+            entries.push(file.to_owned());
+        }
+    }
+    // println!("Sorted:");
+    entries.sort_by(|a, b| a.to_lowercase().partial_cmp(&b.to_lowercase()).unwrap());
+    for entry in &entries {
+        let _ = show_entry(entry, options);
+    }
+
+    Ok(())
+}
+
+fn extract_str_from_dir_entry(entry: &DirEntry) -> Result<String, Error> {
+    let path = entry.path();
+    let file_name = match path.file_name() {
+        Some(file_name) => file_name,
+        None => return Err(Error::new(ErrorKind::Other, "bad path name"))
+    };
+    let file_name = match file_name.to_str() {
+        Some(file_name) => file_name,
+        None => return Err(Error::new(ErrorKind::Other, "path name not a string"))
+    };
+    Ok(file_name.to_owned())
+}
+
+fn show_entry(entry: &str, options: &LsOptions) -> Result<(), Error> {
+    if !options.long {
+        show_entry_short(entry);
+        return Ok(());
+    }
+    // println!("showing entry {}", entry);
+    let metadata = fs::metadata(entry)?;
+    // println!("{:?}", metadata.file_type());
+    // let is_dir = metadata.is_dir();
+    // println!("is_dir: {}", is_dir);
+    // let is_file = metadata.is_file();
+    // println!("is_file: {}", is_file);
+    let permissions = metadata.permissions();
+    let mode = permissions.mode();
+    // println!("permissions: {:o}", permissions.mode());
+    // println!("S_IRUSR: {}", (mode & libc::S_IRUSR != 0));
+    // println!("mode: {}{}", file_type_char(&metadata), mode_str(mode));
+    let modified = metadata.modified()?;
+    // println!("modified: {:?}", modified);
+    let now = Local::now();
+    let tz = now.timezone();
+    let datetime = systime_converter::convert(modified, tz);
+    // println!("strftime: {}", datetime.format("%Y %b %e %H:%M"));
+    // println!("number of hard links: {}", metadata.st_nlink());
+    println!("{} {} {} {} {} {} {}", mode_str(mode, &metadata), metadata.st_nlink(), metadata.st_uid(),
+        metadata.st_gid(), metadata.len(), datetime.format("%Y %b %e %H:%M"),
+        entry);
+    Ok(())
+}
+
+fn show_entry_short(entry: &str) {
+    if let Ok(metadata) = fs::metadata(entry) {
+        if metadata.is_dir() {
+            println!("{}", entry.blue());
+        } else {
+            println!("{}", entry);
+        }
+    }
+}
+
+fn file_type_char(metadata: &fs::Metadata) -> char {
+    if metadata.is_dir() {
+        'd'
+    } else if metadata.is_symlink() {
+        'l'
+    } else {
+        '-'
+    }
+}
+
+fn mode_str(mode: u32, metadata: &fs::Metadata) -> String {
+    let file_type = file_type_char(metadata);
+    let mode_ur = perm_char(mode & libc::S_IRUSR, 'r');
+    let mode_uw = perm_char(mode & libc::S_IWUSR, 'w');
+    let mode_ux = perm_char(mode & libc::S_IXUSR, 'x');
+
+    let mode_gr = perm_char(mode & libc::S_IRGRP, 'r');
+    let mode_gw = perm_char(mode & libc::S_IWGRP, 'w');
+    let mode_gx = perm_char(mode & libc::S_IXGRP, 'x');
+
+    let mode_or = perm_char(mode & libc::S_IROTH, 'r');
+    let mode_ow = perm_char(mode & libc::S_IWOTH, 'w');
+    let mode_ox = perm_char(mode & libc::S_IXOTH, 'x');
+
+    format!("{}{}{}{}{}{}{}{}{}{}",
+        file_type,
+        mode_ur, mode_uw, mode_ux,
+        mode_gr, mode_gw, mode_gx,
+        mode_or, mode_ow, mode_ox).to_string()
+
+}
+
+fn perm_char(flag: u32, ch: char) -> char {
+    if flag != 0 {
+        ch
+    } else {
+        '-'
+    }
+}
