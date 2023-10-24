@@ -1,7 +1,7 @@
 In the [previous episode](https://ajanicij.hashnode.dev/mini-version-of-ls-implemented-in-rust),
 we developed a minimal ls command implemented in Rust.
-In this episode we are starting to work
-on a Rust implementation of Linux command watch:
+In this episode, we are starting to work
+on a Rust implementation of the Linux command watch:
 
 ```
 NAME
@@ -17,11 +17,11 @@ DESCRIPTION
        run until interrupted.
 ```
 
-For example, command
+For example, the command
 
     watch -n 5 ls -l
 
-will run command "ls -l" every 5 seconds and display its output, until interrupted.
+will run the command "ls -l" every 5 seconds and display its output, until interrupted.
 Its output looks like this:
 
 ```
@@ -33,12 +33,12 @@ drwxrwxr-x 4 aleks aleks 4096 Oct 22 10:37 hello-curses
 ```
 
 watch command has lots of command line flags and complex functionality, but in our
-minimal version we will just implement "-n" option that allows us to set the
+minimal version, we will just implement the "-n" option that allows us to set the
 refresh period (the default is 2s).
 
-In the first post we will explore how to control the whole shell window: clear it,
-move cursor to a specified location and write text at that location. We will also
-want to restore the previous window contents upon exit.
+In the first post, we will explore how to control the whole shell window: clear it,
+write text on the window and refresh the window.
+We will also want to restore the previous window contents upon exit.
 
 For this functionality, the library that is commonly used is
 [ncurses](https://en.wikipedia.org/wiki/Ncurses):
@@ -51,7 +51,7 @@ that runs under a terminal emulator. It also optimizes screen changes, in order 
 the latency experienced when using remote shells.
 ```
 
-There are several Rust crates that can be used for working with ncurses. I chose
+There are several Rust crates that can be used for working with ncurses. I have chosen
 [pancurses](https://docs.rs/pancurses/latest/pancurses/).
 
 This is a minimal program that uses pancurses:
@@ -77,4 +77,7 @@ any key. After the user has clicked on a key, we ignore that input, call
 method endwin to clean up and then exit.
 
 In the next episode, we will look into more functionality provided by
-pancurses that we will need for our implementation of watch command.
+pancurses that we will need for our implementation of the watch command.
+
+Get the code at
+[2023-10-22-watch/hello-curses](https://github.com/ajanicij/hashnode-code/tree/master/2023-10-22-watch/hello-curses).
