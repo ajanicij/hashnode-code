@@ -108,6 +108,9 @@ We set the timeout by calling the timeout method. Then, when we call getch,
 it will return Some(code) if the user clicked on a key, or None if we
 timed out.
 
+This sample keeps moving an "x" in the window, one step to the right every
+second:
+
 ```
 use pancurses::{initscr, endwin, curs_set, Input};
 use pancurses;
@@ -138,3 +141,9 @@ fn main() {
     endwin();
 }
 ```
+
+Get the code at
+[2023-10-22-watch](https://github.com/ajanicij/hashnode-code/tree/master/2023-10-22-watch).
+
+In the next episode, we run a program in a subprocess and capture its standard
+output.
