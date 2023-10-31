@@ -79,3 +79,7 @@ fn run_command(cmd: &Vec<&str>) {
 }
 ```
 
+Get the code at
+[2023-10-28-run-command](https://github.com/ajanicij/hashnode-code/tree/master/2023-10-28-run-command).
+
+In the next episode, we will write our version of mini watch command.
