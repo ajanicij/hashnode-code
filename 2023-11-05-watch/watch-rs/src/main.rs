@@ -8,7 +8,7 @@ use chrono::Local;
 
 #[derive(Debug)]
 struct CmdOption {
-    name: Option<String>,
+    name: String,
     value: String,
     length: usize,
 }
@@ -31,10 +31,11 @@ fn run() -> Result<(), String> {
     let mut i = 0;
     while i < args.len() {
         let cmd_options = get_option(i, &args)?;
-        if cmd_options.name.is_none() {
+        if cmd_options.is_none() {
             break;
         }
-        let name = cmd_options.name.unwrap();
+        let cmd_options = cmd_options.unwrap();
+        let name = cmd_options.name;
         if name == "n" {
             match cmd_options.value.parse() {
                 Ok(value) => option_n = value,
@@ -70,7 +71,7 @@ fn run() -> Result<(), String> {
     }
 }
 
-fn get_option(mut i: usize, args: &[String]) -> Result<CmdOption, String> {
+fn get_option(mut i: usize, args: &[String]) -> Result<Option<CmdOption>, String> {
     let re = Regex::new(r"-([[:alpha:]])(.*)$").unwrap();
     assert!(i < args.len());
     let arg = &args[i];
@@ -81,27 +82,23 @@ fn get_option(mut i: usize, args: &[String]) -> Result<CmdOption, String> {
             i = i + 1;
             if i < args.len() {
                 value = &args[i];
-                return Ok(CmdOption {
-                    name: Some(name.to_owned()),
+                return Ok(Some(CmdOption {
+                    name: name.to_owned(),
                     value: value.to_owned(),
                     length: 2,
-                });
+                }));
             } else {
                 return Err("Missing option value".to_owned());
             }
         } else {
-            return Ok(CmdOption {
-                name: Some(name.to_owned()),
+            return Ok(Some(CmdOption {
+                name: name.to_owned(),
                 value: value.to_owned(),
                 length: 1,
-            });
+            }));
         }
     } else {
-        return Ok(CmdOption {
-            name: None,
-            value: "".to_owned(),
-            length: 0,
-        });
+        return Ok(None);
     }
 }
 
