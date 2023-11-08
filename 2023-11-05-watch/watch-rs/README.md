@@ -7,10 +7,10 @@ explored how to use
 [pancurses](https://docs.rs/pancurses/latest/pancurses/)
 ([here](https://ajanicij.hashnode.dev/programming-curses-in-rust) and
 [here](https://ajanicij.hashnode.dev/programming-curses-in-rust-part-2))
-to get a full control of the terminal window.
+to get full control of the terminal window.
 
 Now we are ready to write watch-rs, a minimal Rust version of
-[watch command] (https://linux.die.net/man/1/watch).
+[watch command](https://linux.die.net/man/1/watch).
 
 Our program can be run, for example, like this:
 
@@ -26,7 +26,7 @@ First, I want to describe how we process command line arguments. I will confess
 that this part required the most thought. I couldn't use clap, because I didn't
 want clap to process command line options that should be passed to the command
 we are running in the subprocess (-l in the example above). Also, I wanted to
-be able to parse option
+be able to parse the option
 
     -n5
 
@@ -135,7 +135,7 @@ or
 If it is the first form, then this argument contains both the option name
 and option value. We construct a CmdOption and return it.
 
-It it is the second form (-n, for example), then we have to get the option
+If it is the second form (-n, for example), then we have to get the option
 value from the next argument. If this is the last argument, it is an error
 condition (missing option value). Otherwise, we get the value from the next
 argument, construct a CmdOption and return it.
@@ -144,7 +144,7 @@ If the argument didn't match the regular expression, that means we are done
 processing options and the rest of the arguments form the command that we
 will run.
 
-We call get_option from run function repeatedly until we run out of options:
+We call get_option from the run function repeatedly until we run out of options:
 
 ```
     let mut option_n: u32 = 2; // The default is 2s.
@@ -178,7 +178,7 @@ this, for two reasons:
 - It is easier to add more options. The real watch command supports a lot
   more options, and adding code that parses them would be straightforward.
 
-At the end of the code snippet above, cmd is a lice of strings that form
+At the end of the code snippet above, cmd is a slice of strings that form
 the command we are running, option_n is the sleep interval (in seconds)
 between to executions of the command. Here's how we run the command:
 
